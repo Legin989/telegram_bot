@@ -4,7 +4,8 @@ from aiogram import Router, F
 from aiogram.filters import CommandStart, Command
 from aiogram.types import Message, CallbackQuery
 
-import keyboards as kb
+import keyboards.reply as rkb
+import keyboards.inline as ikb
 
 
 
@@ -17,7 +18,7 @@ async def handle_start(message:Message):
     await message.answer(
         f"Привіт, {message.from_user.first_name}!\n"
         "Тут ти можеш поспілкуватись з відомими особистостями, пройти квіз та дізнатись випадковий факт",
-        reply_markup = kb.main_menu_kb
+        reply_markup = rkb.main_menu_kb
     )
 
 @router.message(Command(commands=["help"]))
@@ -32,31 +33,30 @@ async def handle_help(message:Message):
 
 
 
-@router.message(F.text == kb.BTN_CHATBOT)
-async def handle_text(message:Message):
+@router.message(F.text == rkb.BTN_GPT)
+async def handle_gpt(message:Message):
     await message.answer("CHATBOT")
 
-@router.message(F.text == kb.BTN_FACT_TEXT)
+@router.message(F.text == rkb.BTN_TALK)
+async def handle_talk(message: Message):
+    await message.answer("Обери особистість з якою ти хочеш поспілкуватись: ")
+
+@router.message(F.text == rkb.BTN_FACT)
 async def handle_fact(message:Message):
-    await message.answer("BTN_FACT_TEXT")
+    await message.answer("Fact")
 
-@router.message(F.text == kb.BTN_FAMOUS_PERSON)
-async def handle_famous_person(message: Message):
-    await message.answer("Обери особистість з якою ти хочеш поспілкуватись: ",
-                         reply_markup=kb.famous_people_inline_kb)
-
-@router.message(F.text == kb.BTN_SETTINGS)
-async def handle_settings(message:Message):
-    await message.answer("SETTINGS")
+@router.message(F.text == rkb.BTN_QUIZ)
+async def handle_quiz(message:Message):
+    await message.answer("Quiz")
 
 
 
-@router.callback_query(F.data.startswith("famous_person"))
-async def handle_famous_person(callback: CallbackQuery):
-    await callback.message.answer(f"Ти натиснув {kb.famous_people[callback.data]}")
-
-    await callback.answer("Все ок!")
-
+# @router.callback_query(F.data.startswith("famous_person"))
+# async def handle_famous_person(callback: CallbackQuery):
+#     await callback.message.answer(f"Ти натиснув {kb.famous_people[callback.data]}")
+#
+#     await callback.answer("Все ок!")
+#
 
 
 
