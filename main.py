@@ -8,7 +8,7 @@ from aiogram.enums import ParseMode
 from aiogram.types import BotCommand
 
 from config import settings
-from handlers import router
+from handlesrs import routers
 
 
 logger = logging.getLogger(__name__)
@@ -21,7 +21,6 @@ async def set_commands(bot: Bot) -> None:
         BotCommand(command="random", description="Випадковий факт"),
         BotCommand(command="gpt", description="Питання до Chat-GPT"),
     ])
-
 
 
 def setup_logging() -> None:
@@ -41,13 +40,9 @@ async def main():
         default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dp = Dispatcher()
 
-
-    #command menu
     await set_commands(bot)
 
-
-    dp.include_routers(router)
-
+    dp.include_routers(routers)
 
     print("запускаємо бота...")
     await dp.start_polling(bot)
