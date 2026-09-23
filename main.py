@@ -42,7 +42,7 @@ async def main():
 
     await set_commands(bot)
 
-    dp.include_routers(routers)
+    dp.include_routers(*routers)
 
     print("запускаємо бота...")
     await dp.start_polling(bot)
