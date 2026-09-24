@@ -10,7 +10,7 @@ from openai import (
 )
 
 from config import settings
-from utils import load_prompt
+
 
 logger = logging.getLogger(__name__)
 
@@ -20,12 +20,12 @@ client = AsyncOpenAI(
 )
 
 
-async def ask(system_prompt: str, user_message: str) -> str | None:
-    messages=[
-        {"role": "system","content": system_prompt},
-        {"role": "user","content": user_message}
-    ]
-    return await complate(messages)
+async def ask(system_prompt: str, user_message: str | None = None) -> str | None:
+    messages=[{"role": "system","content": system_prompt}]
+
+    if user_message:
+        messages.append( {"role": "user","content": user_message} )
+    return await complete(messages)
 
 async def ask_history(system_prompt: str, history: list[dict[str, str]]) -> str | None:
     messages=[
@@ -34,9 +34,11 @@ async def ask_history(system_prompt: str, history: list[dict[str, str]]) -> str 
         *history
     ]
 
+    return await complete(messages)
 
 
-async def complate(message: list[dict[str,str]]) ->list[str] | str | None:
+
+async def complete(message: list[dict[str,str]]) -> list[str] | str | None:
     try:
         response = await client.chat.completions.create(
             model=settings.OPENAI_MODEL,
@@ -69,6 +71,7 @@ async def complate(message: list[dict[str,str]]) ->list[str] | str | None:
         return None
 
     content = response.choices[0].message.content or ""
+
 
     if not content:
         logger.warning("Повернув порожню відповідь")

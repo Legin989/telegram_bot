@@ -1,9 +1,9 @@
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
-BTN_GPT = "Чат-бот"
-BTN_FACT = "Цікаві факти"
-BTN_TALK = "обистість"
-BTN_QUIZ = "Квіз"
+BTN_GPT = "🤖 Чат-бот"
+BTN_FACT = "🧠 Цікавий факт"
+BTN_TALK = "👤 Відома особистість"
+BTN_QUIZ = "❓ Квіз"
 
 
 MENU_BUTTONS = {BTN_QUIZ, BTN_TALK, BTN_FACT, BTN_GPT}

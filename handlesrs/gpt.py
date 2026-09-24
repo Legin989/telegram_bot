@@ -35,13 +35,9 @@ async def handle_gpt(message: Message, state: FSMContext):
 async def handle_gpt_message(message: Message, state: FSMContext):
     text = await ask(load_prompt("gpt"), message.text)
 
-    # data = await state.get_data()
-    # messages = [*data["messages"], text]
-    # await state.update_data(messages=messages)
-
     if text is None:
         await message.answer(FALLBACK)
-
+        return
 
     if isinstance(text, list):
         for ind, text_item in enumerate(text):
@@ -49,5 +45,6 @@ async def handle_gpt_message(message: Message, state: FSMContext):
                 text_item,
                 reply_markup=inline_kb.finish_kb if ind == len(text)-1 else None
             )
+            return
 
     await message.answer(text, reply_markup=inline_kb.finish_kb)
