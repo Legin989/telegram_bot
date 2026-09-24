@@ -4,7 +4,7 @@ from aiogram.types import Message
 import keyboards.reply as reply_kb
 
 
-router = Router()
+router = Router(name="random_fact")
 
 
 @router.message(F.text == reply_kb.BTN_FACT)

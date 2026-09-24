@@ -3,7 +3,7 @@ from aiogram.types import Message
 
 import keyboards.reply as reply_kb
 
-router = Router()
+router = Router(name="celebrity_talk")
 
 @router.message(F.text == reply_kb.BTN_TALK)
 async def handle_talk(message: Message):

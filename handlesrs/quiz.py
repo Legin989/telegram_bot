@@ -4,7 +4,7 @@ from aiogram.types import Message
 import keyboards.reply as reply_kb
 
 
-router = Router()
+router = Router(name="quiz")
 
 
 @router.message(F.text == reply_kb.BTN_QUIZ)

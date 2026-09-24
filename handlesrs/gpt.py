@@ -6,10 +6,13 @@ from aiogram.types import Message
 
 import keyboards.reply as reply_kb
 import keyboards.inline as inline_kb
-from gpt import send_request_ai
-from utils import load_message
+from catalog import FALLBACK
+from filter import USER_TEXT
+from gpt import ask
+from utils import load_message, load_prompt
 
-router = Router()
+router = Router(name="gpt")
+
 
 
 class GptStates(StatesGroup):
@@ -28,7 +31,23 @@ async def handle_gpt(message: Message, state: FSMContext):
     await message.answer(load_message("gpt"))
 
 
-@router.message(GptStates.dialog, F.text & ~F.text.startswith("/"))
+@router.message(GptStates.dialog, USER_TEXT)
 async def handle_gpt_message(message: Message, state: FSMContext):
-    text = await send_request_ai(message.text)
+    text = await ask(load_prompt("gpt"), message.text)
+
+    # data = await state.get_data()
+    # messages = [*data["messages"], text]
+    # await state.update_data(messages=messages)
+
+    if text is None:
+        await message.answer(FALLBACK)
+
+
+    if isinstance(text, list):
+        for ind, text_item in enumerate(text):
+            await message.answer(
+                text_item,
+                reply_markup=inline_kb.finish_kb if ind == len(text)-1 else None
+            )
+
     await message.answer(text, reply_markup=inline_kb.finish_kb)

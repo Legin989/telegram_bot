@@ -6,6 +6,8 @@ BTN_TALK = "обистість"
 BTN_QUIZ = "Квіз"
 
 
+MENU_BUTTONS = {BTN_QUIZ, BTN_TALK, BTN_FACT, BTN_GPT}
+
 main_menu_kb = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text=BTN_GPT)],
