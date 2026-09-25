@@ -1,3 +1,5 @@
+import re
+
 from aiogram import Router, F
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, FSInputFile
@@ -12,6 +14,10 @@ from utils import load_message, image_path, load_prompt
 from gpt import ask
 
 router = Router(name="quiz")
+
+
+MAX_ASKED = 10
+VERDICT_RE = re.compile(r"^\W*(НЕПРАВИЛЬНО|ПРАВИЛЬНО)\W*$", re.IGNORECASE)
 
 
 class QuizStates(StatesGroup):
