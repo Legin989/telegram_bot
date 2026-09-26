@@ -29,27 +29,18 @@ async def handle_start(message: Message, state: FSMContext):
 
     await show_main_menu(message, state)
 
-@router.message(Command(commands=["help"]))
-async def handle_start(message: Message):
-    await message.answer(
-        "Доступні команди:\n"
-        "/start - Розпочати\n"
-        "/help - Ця команда\n"
-        "/random - Випадковий факт\n"
-        "/gpt - Чат-бот"
-    )
-
 
 @router.message(Command(commands=["help"]))
 async def handle_help(message: Message):
     await message.answer(
         "Доступні команди:\n"
         "/start - Розпочати\n"
-        "/help - Список команд\n"
+        "/help - Ця команда\n"
         "/random - Випадковий факт\n"
         "/gpt - Чат-бот\n"
         "/talk - Діалог з відомою особистістю\n"
-        "/quiz - Квіз"
+        "/quiz - Квіз\т"
+        "/recommend - Рекомендації"
     )
 
 
