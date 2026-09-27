@@ -20,9 +20,10 @@ async def set_commands(bot: Bot) -> None:
         BotCommand(command="help", description="Допомога"),
         BotCommand(command="random", description="Випадковий факт"),
         BotCommand(command="gpt", description="Питання до Chat-GPT"),
-        BotCommand(command="celebrity_talk", description="Розмова з відомою особистістю"),
+        BotCommand(command="talk", description="Розмова з відомою особистістю"),
         BotCommand(command="quiz", description="Квіз"),
-        BotCommand(command="recommend",description="Рекомендації Фільмів/Книг/Музики")
+        BotCommand(command="recommend",description="Рекомендації Фільмів/Книг/Музики"),
+        BotCommand(command="translate", description="Перекладач")
     ])
 
 

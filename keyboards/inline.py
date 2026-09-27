@@ -77,20 +77,20 @@ def talk_kb() -> InlineKeyboardMarkup:
 
 # ==== TRANSLATE ====
 
-CB_TRANSLATE_CHANGE = "translate:change"
+CB_TRANSLATE_CHANGE = "language_corect:change"
 
 class LanguageCallback(CallbackData, prefix="language"):
     code: str
 
 
-def languages_kb() -> InlineKeyboardMarkup:
-    builder = InlineKeyboardBuilder()
-
-    for code, name in LANGUAGES.items():
-        builder.button(text=name, callback_data=LanguageCallback(code=code))
-
-    builder.adjust(2)
-    return builder.as_markup()
+# def languages_kb() -> InlineKeyboardMarkup:
+#     builder = InlineKeyboardBuilder()
+#
+#     for code, name in LANGUAGES.items():
+#         builder.button(text=name, callback_data=LanguageCallback(code=code))
+#
+#     builder.adjust(2)
+#     return builder.as_markup()
 
 
 translate_kb = InlineKeyboardMarkup(

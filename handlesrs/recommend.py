@@ -54,7 +54,7 @@ async def send_recommendation(message: Message, state: FSMContext):
 
 @router.message(Command("recommend"))
 @router.message(F.text == reply_kb.BTN_RECOMMEND)
-async def handle_talk(message: Message, state: FSMContext):
+async def handle_recommend(message: Message, state: FSMContext):
     await state.clear()
     await state.set_state(RecommendStates.choosing_category)
     await message.answer(
@@ -64,7 +64,7 @@ async def handle_talk(message: Message, state: FSMContext):
 
 
 @router.callback_query(inline_kb.CategoryCallback.filter())
-async def handle_choose_person(
+async def handle_choose_category(
         callback: CallbackQuery,
         callback_data: inline_kb.CategoryCallback,
         state: FSMContext
