@@ -88,25 +88,36 @@ async def handle_choose_category(
 
 
 @router.message(RecommendStates.choosing_category, USER_TEXT)
-async def handle_text_before_choice(message: Message):
+async def handle_text_before_choice_category(message: Message):
     await message.answer("Спершу обери категорію кнопкою вище 👆")
 
 
 
 @router.message(RecommendStates.preferences, USER_TEXT)
-async def handle_text_after_choice(message: Message, state: FSMContext):
+async def handle_preferences(message: Message, state: FSMContext):
     await state.update_data(preferences=message.text)
     await send_recommendation(message, state)
 
 
 @router.callback_query(F.data == inline_kb.CB_RECOMMEND_DISLIKE)
 async def handle_dislike(callback: CallbackQuery, state: FSMContext):
-
+    await callback.answer("Граразд шукаю інше")
     data = await state.get_data()
-    title = data["last_title"]
-    disliked = data["disliked"]
 
-    await state.update_data(disliked=[*disliked, title])
+    if "preferences" not in data:
+        await callback.message.answer("Підбір уже завершено почини заново: /recommend")
+        return
+    title = data.get("last_title")
+    disliked = data.get("disliked", [])
+
+    if title and title not in disliked:
+        await state.update_data(disliked=[*disliked, title])
+        logger.info("Користувач %s відкинув %r", callback.from_user.id, title)
 
     await callback.message.edit_reply_markup(reply_markup=None)
+    await send_recommendation(callback.message, state)
+
+@router.callback_query(F.data == inline_kb.CB_RECOMMEND_MORE)
+async def handle_more(callback: CallbackQuery, state: FSMContext):
+    await state.update_data(preferences=callback.message.text)
     await send_recommendation(callback.message, state)

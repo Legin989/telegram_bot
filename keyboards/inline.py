@@ -2,7 +2,7 @@ from aiogram.filters.callback_data import CallbackData
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from catalog import QUIZ_TOPICS, PERSONS, LANGUAGES, RECOMMEND_CATEGORIES
+from catalog import QUIZ_TOPICS, PERSONS, RECOMMEND_CATEGORIES
 
 CB_RANDOM_MORE = "random:more"
 CB_FINISH = "common:finish"
@@ -83,16 +83,6 @@ class LanguageCallback(CallbackData, prefix="language"):
     code: str
 
 
-# def languages_kb() -> InlineKeyboardMarkup:
-#     builder = InlineKeyboardBuilder()
-#
-#     for code, name in LANGUAGES.items():
-#         builder.button(text=name, callback_data=LanguageCallback(code=code))
-#
-#     builder.adjust(2)
-#     return builder.as_markup()
-
-
 translate_kb = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text="🌐 Інша мова", callback_data=CB_TRANSLATE_CHANGE)],
@@ -104,6 +94,7 @@ translate_kb = InlineKeyboardMarkup(
 # ==== RECOMMEND ====
 
 CB_RECOMMEND_DISLIKE = "recommend:dislike"
+CB_RECOMMEND_MORE = "recommend:more"
 
 
 class CategoryCallback(CallbackData, prefix="category"):
@@ -123,6 +114,7 @@ def choose_recommend_categories_kb() -> InlineKeyboardMarkup:
 recommend_kb = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text="👎 Не подобається", callback_data=CB_RECOMMEND_DISLIKE)],
+        [InlineKeyboardButton(text="🔄 Хочу ще пропозицію", callback_data=CB_RECOMMEND_MORE)],
         [InlineKeyboardButton(text="❌ Закінчити", callback_data=CB_FINISH)],
     ]
 )

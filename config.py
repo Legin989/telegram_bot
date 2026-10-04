@@ -19,7 +19,7 @@ class Settings:
         def validate(self) -> None:
                 mising = [
                         name
-                        for name in (Settings.__annotations__.keys())
+                        for name in Settings.__annotations__
                         if not getattr(self, name)
                 ]
                 if mising:
