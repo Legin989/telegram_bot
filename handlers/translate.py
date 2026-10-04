@@ -26,7 +26,7 @@ class TranslateState(StatesGroup):
 
 @router.message(Command("translate"))
 @router.message(F.text == reply_kb.BTN_TRANSLATE)
-async def handle_translate(message: Message, state: FSMContext):
+async def handle_translate_start(message: Message, state: FSMContext):
 	await state.clear()
 	await state.set_state(TranslateState.choosing_language)
 	await message.answer(
@@ -39,16 +39,18 @@ async def handle_language_is_corect(message: Message, state: FSMContext):
 		load_prompt("language")
 	)
 	result = await ask(prompt, message.text)
+	if result is None:
+		await message.answer(FALLBACK)
 
 	if result.strip().upper() == "YES":
-		await state.set_state(TranslateState.translating)
 		await state.update_data(language=message.text)
-		await message.answer("Чудоаво така мова існує, введіть текст а я перекладу", reply_markup=inline_kb.translate_kb)
+		await state.set_state(TranslateState.translating)
+		await message.answer("Чудоаво така мова/діалект існує, введіть текст а я перекладу", reply_markup=inline_kb.translate_kb)
 	else:
-		await message.answer("Такої мови не існує, спробуйте ще раз", reply_markup=inline_kb.translate_kb)
+		await message.answer("Такої мови/діалекту не існує, спробуйте ще раз", reply_markup=inline_kb.translate_kb)
 
 @router.message(TranslateState.translating, USER_TEXT)
-async def handle_translate(message:Message, state:FSMContext):
+async def handle_translate_message(message:Message, state:FSMContext):
 
 	data = await state.get_data()
 	language = data["language"]

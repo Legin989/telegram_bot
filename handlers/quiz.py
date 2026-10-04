@@ -27,6 +27,19 @@ class QuizStates(StatesGroup):
     answering = State()
     waiting_next = State()
 
+async def get_quiz_summary(state: FSMContext) -> str | None:
+    current_state = await state.get_state()
+
+    if current_state is None or not current_state.startswith(QuizStates.__name__):
+        return None
+
+    data = await state.get_data()
+    total = data.get("total", 0)
+
+    if not total:
+        return None
+
+    return f"🏆 Твій результат: <b>{data.get('score', 0)} з {total}</b>"
 
 def parse_verdict(text: str) -> tuple[bool | None, str]:
     """Розбирає відповідь судді: (правильно?, пояснення). None — формат порушено."""

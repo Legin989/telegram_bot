@@ -8,7 +8,9 @@ from aiogram.enums import ParseMode
 from aiogram.types import BotCommand
 
 from config import settings
-from handlesrs import routers
+from handlers import routers
+from handlers.errors import handle_error
+from middlewares.throttling import ThrottlingMiddleware
 
 
 logger = logging.getLogger(__name__)
@@ -47,6 +49,11 @@ async def main():
     await set_commands(bot)
 
     dp.include_routers(*routers)
+    dp.error.register(handle_error)
+
+    throttling = ThrottlingMiddleware(rate_limit=1.0)
+    dp.message.outer_middleware(throttling)
+    dp.callback_query.outer_middleware(throttling)
 
     print("запускаємо бота...")
     await dp.start_polling(bot)

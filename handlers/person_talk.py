@@ -9,10 +9,10 @@ from aiogram.utils.chat_action import ChatActionSender
 
 import keyboards.reply as reply_kb
 import keyboards.inline as inline_kb
-from gpt import ask, ask_history
+from gpt import ask_history
 from config import settings
 from filters import USER_TEXT
-from catalog import QUIZ_TOPICS, FALLBACK, PERSONS
+from catalog import FALLBACK, PERSONS
 from utils import load_message, image_path, load_prompt
 
 

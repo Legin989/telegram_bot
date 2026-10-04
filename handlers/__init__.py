@@ -5,6 +5,7 @@ from .quiz import router as quiz_router
 from .random_fact import  router as random_fact_router
 from .translate import router as translate_router
 from .recommend import router as recommend_router
+from .fallback import router as fallback_router
 
 routers = [
     person_talk_router,
@@ -13,5 +14,6 @@ routers = [
     quiz_router,
     random_fact_router,
     recommend_router,
-    translate_router
+    translate_router,
+    fallback_router
 ]
