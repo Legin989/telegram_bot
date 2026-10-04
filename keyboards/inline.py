@@ -77,7 +77,7 @@ def talk_kb() -> InlineKeyboardMarkup:
 
 # ==== TRANSLATE ====
 
-CB_TRANSLATE_CHANGE = "language_corect:change"
+CB_TRANSLATE_CHANGE = "language_correct:change"
 
 class LanguageCallback(CallbackData, prefix="language"):
     code: str
@@ -95,6 +95,7 @@ translate_kb = InlineKeyboardMarkup(
 
 CB_RECOMMEND_DISLIKE = "recommend:dislike"
 CB_RECOMMEND_MORE = "recommend:more"
+CB_RECOMMEND_ADD = "recommend:add"
 
 
 class CategoryCallback(CallbackData, prefix="category"):
@@ -114,7 +115,8 @@ def choose_recommend_categories_kb() -> InlineKeyboardMarkup:
 recommend_kb = InlineKeyboardMarkup(
     inline_keyboard=[
         [InlineKeyboardButton(text="👎 Не подобається", callback_data=CB_RECOMMEND_DISLIKE)],
-        [InlineKeyboardButton(text="🔄 Хочу ще пропозицію", callback_data=CB_RECOMMEND_MORE)],
+        [InlineKeyboardButton(text="🔄 Хочу ще варіант", callback_data=CB_RECOMMEND_MORE)],
+        [InlineKeyboardButton(text="➕Додати побажання", callback_data=CB_RECOMMEND_ADD)],
         [InlineKeyboardButton(text="❌ Закінчити", callback_data=CB_FINISH)],
     ]
 )

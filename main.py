@@ -41,6 +41,7 @@ def setup_logging() -> None:
 async def main():
     setup_logging()
 
+    settings.validate()
     bot = Bot(
         settings.BOT_API_KEY,
         default=DefaultBotProperties(parse_mode=ParseMode.HTML))

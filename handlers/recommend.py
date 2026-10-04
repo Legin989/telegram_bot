@@ -22,6 +22,7 @@ router = Router(name="recommend")
 class RecommendStates(StatesGroup):
     choosing_category = State()
     preferences = State()
+    adding_preferences = State()
 
 
 async def send_recommendation(message: Message, state: FSMContext):
@@ -33,7 +34,10 @@ async def send_recommendation(message: Message, state: FSMContext):
         load_prompt("recommend")
         .format(
             category=RECOMMEND_CATEGORIES[category],
-            preferences=data["preferences"],
+            preferences="\n".join(
+                f"- {preference}"
+                for preference in data["preferences"]
+            ),
             disliked="\n".join(f"- {title}" for title in disliked) or "(нічого)"
         )
     )
@@ -78,7 +82,11 @@ async def handle_choose_category(
 
     await callback.message.edit_reply_markup(reply_markup=None)
     await state.set_state(RecommendStates.preferences)
-    await state.update_data(category=category, disliked=[])
+    await state.update_data(
+        category=category,
+        disliked=[],
+        preferences=[]
+    )
 
     await callback.message.answer(
         f"Категорія: <b>{RECOMMEND_CATEGORIES[category]}</b>\n"
@@ -95,7 +103,7 @@ async def handle_text_before_choice_category(message: Message):
 
 @router.message(RecommendStates.preferences, USER_TEXT)
 async def handle_preferences(message: Message, state: FSMContext):
-    await state.update_data(preferences=message.text)
+    await state.update_data(preferences=[message.text])
     await send_recommendation(message, state)
 
 
@@ -119,5 +127,39 @@ async def handle_dislike(callback: CallbackQuery, state: FSMContext):
 
 @router.callback_query(F.data == inline_kb.CB_RECOMMEND_MORE)
 async def handle_more(callback: CallbackQuery, state: FSMContext):
-    await state.update_data(preferences=callback.message.text)
+
+    await callback.answer()
+
+    await callback.message.edit_reply_markup(reply_markup=None)
+
     await send_recommendation(callback.message, state)
+
+@router.callback_query(F.data == inline_kb.CB_RECOMMEND_ADD)
+async def handle_add_preference(callback: CallbackQuery, state: FSMContext):
+
+    await callback.answer()
+
+    await callback.message.edit_reply_markup(reply_markup=None)
+
+    await state.set_state(RecommendStates.adding_preferences)
+
+    await callback.message.answer("Напиши своє побажання: ")
+
+@router.message(RecommendStates.adding_preferences, USER_TEXT)
+async def handle_add_preferences_text(message: Message, state: FSMContext):
+    data = await state.get_data()
+    preferences = data.get("preferences", [])
+
+    new_preferences = message.text.strip()
+
+    if preferences:
+        preferences.append(new_preferences)
+    else:
+        preferences = [new_preferences]
+
+    await state.update_data(preferences=preferences)
+
+    await message.answer(
+        "Добре, побажання додано!",
+        reply_markup=inline_kb.recommend_kb
+    )
