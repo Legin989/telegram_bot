@@ -34,20 +34,28 @@ async def handle_translate_start(message: Message, state: FSMContext):
 	)
 
 @router.message(USER_TEXT, TranslateState.choosing_language)
-async def handle_language_is_corect(message: Message, state: FSMContext):
+async def handle_language_is_correct(message: Message, state: FSMContext):
 	prompt = (
 		load_prompt("language")
 	)
+
 	result = await ask(prompt, message.text)
+
 	if result is None:
 		await message.answer(FALLBACK)
+		return
 
 	if result.strip().upper() == "YES":
 		await state.update_data(language=message.text)
 		await state.set_state(TranslateState.translating)
-		await message.answer("Чудоаво така мова/діалект існує, введіть текст а я перекладу", reply_markup=inline_kb.translate_kb)
+		await message.answer(
+			"Чудоаво! така мова/діалект існує."
+			"Введіть текст а я перекладу",
+			reply_markup=inline_kb.translate_kb)
 	else:
-		await message.answer("Такої мови/діалекту не існує, спробуйте ще раз", reply_markup=inline_kb.translate_kb)
+		await message.answer(
+			"Такої мови/діалекту не існує, спробуйте ще раз",
+			reply_markup=inline_kb.translate_kb)
 
 @router.message(TranslateState.translating, USER_TEXT)
 async def handle_translate_message(message:Message, state:FSMContext):
@@ -70,8 +78,13 @@ async def handle_translate_message(message:Message, state:FSMContext):
 
 @router.callback_query(F.data == inline_kb.CB_TRANSLATE_CHANGE)
 async def handle_translate_change(callback: CallbackQuery, state: FSMContext):
+	await callback.answer()
+
+	await callback.message.edit_reply_markup(reply_markup=None)
+
 	await state.clear()
 	await state.set_state(TranslateState.choosing_language)
+	
 	await callback.message.answer(
 		text=load_message("translate")
 	)
