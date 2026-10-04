@@ -29,8 +29,11 @@ async def show_main_menu(message: Message, state: FSMContext) -> None:
 @router.message(CommandStart())
 async def handle_start(message: Message, state: FSMContext):
     user = message.from_user
-    with open("users.json", "r", encoding="utf-8") as f:
-        users: dict = json.load(f)
+    try:
+        with open("users.json", "r", encoding="utf-8") as f:
+            users: dict = json.load(f)
+    except FileNotFoundError:
+        users = {}
 
     users[user.id] = {
         "username": user.username,
